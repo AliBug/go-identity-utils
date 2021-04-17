@@ -17,8 +17,8 @@ func ReadMongoConfig(sect string) string {
 	mongoHost := viper.GetString(fmt.Sprintf("%s.host", sect))
 	mongoDbName := viper.GetString(fmt.Sprintf("%s.database", sect))
 
-	if mongoUser == "" || mongoPass == "" || mongoHost == "" || mongoDbName == "" {
-		log.Fatalf("Mongo config of %s is invalid", sect)
+	if mongoHost == "" || mongoDbName == "" {
+		log.Fatalf("Mongo host or dbname of %s is required", sect)
 	}
 
 	return fmt.Sprintf(mongoURLTemplate, mongoUser, mongoPass, mongoHost, mongoDbName)
