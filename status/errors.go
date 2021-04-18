@@ -1,6 +1,9 @@
-package domain
+package status
 
-import "errors"
+import (
+	"errors"
+	"net/http"
+)
 
 var (
 	// ErrInternalServerError will throw if any the Internal Server Error happen
@@ -18,3 +21,28 @@ var (
 	// ErrConfig will throw if config has error
 	ErrConfig = errors.New("Config Error")
 )
+
+// GetStatusCode - Translate err to status code
+func GetStatusCode(err error) int {
+	if err == nil {
+		return http.StatusOK
+	}
+
+	// logrus.Error(err)
+	switch err {
+	case ErrInternalServerError:
+		return http.StatusInternalServerError
+	case ErrNotFound:
+		return http.StatusNotFound
+	case ErrConflict:
+		return http.StatusConflict
+	case ErrBadParamInput, ErrConfig:
+		return http.StatusBadRequest
+	case ErrUnauthorized:
+		return http.StatusUnauthorized
+	case ErrForbidden:
+		return http.StatusForbidden
+	default:
+		return http.StatusInternalServerError
+	}
+}
