@@ -46,3 +46,8 @@ func GetStatusCode(err error) int {
 		return http.StatusInternalServerError
 	}
 }
+
+// ResponseError represent the reseponse error struct
+type ResponseError struct {
+	Message string `json:"message"`
+}
