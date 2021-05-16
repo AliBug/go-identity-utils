@@ -8,7 +8,16 @@ import (
 )
 
 // TokenConfig -
-type TokenConfig struct {
+type TokenConfig interface {
+	GetIssuer() string
+	GetAccessTokenSecret() []byte
+	GetRefreshTokenSecret() []byte
+	GetAccessExpirationSeconds() time.Duration
+	GetRefreshExpirationSeconds() time.Duration
+}
+
+// TokenConfigBody - implement TokenConfig interface
+type TokenConfigBody struct {
 	accessExpirationSeconds  time.Duration
 	refreshExpirationSeconds time.Duration
 	accessTokenSecret        []byte
@@ -17,38 +26,38 @@ type TokenConfig struct {
 }
 
 // GetIssuer -
-func (t *TokenConfig) GetIssuer() string {
+func (t *TokenConfigBody) GetIssuer() string {
 	return t.issuer
 }
 
 // GetAccessTokenSecret -
-func (t *TokenConfig) GetAccessTokenSecret() []byte {
+func (t *TokenConfigBody) GetAccessTokenSecret() []byte {
 	return t.accessTokenSecret
 }
 
 // GetRefreshTokenSecret -
-func (t *TokenConfig) GetRefreshTokenSecret() []byte {
+func (t *TokenConfigBody) GetRefreshTokenSecret() []byte {
 	return t.refreshTokenSecret
 }
 
 // GetAccessExpirationSeconds -
-func (t *TokenConfig) GetAccessExpirationSeconds() time.Duration {
+func (t *TokenConfigBody) GetAccessExpirationSeconds() time.Duration {
 	return t.accessExpirationSeconds
 }
 
 // GetRefreshExpirationSeconds -
-func (t *TokenConfig) GetRefreshExpirationSeconds() time.Duration {
+func (t *TokenConfigBody) GetRefreshExpirationSeconds() time.Duration {
 	return t.refreshExpirationSeconds
 }
 
 // ReadTokenConfig - read Token Config
-func ReadTokenConfig(tokenSect string, maxAgeSect string) *TokenConfig {
+func ReadTokenConfig(tokenSect string, maxAgeSect string) TokenConfig {
 	accessTokenSecret := []byte(viper.GetString(fmt.Sprintf("%s.accessSecret", tokenSect)))
 	refreshTokenSecret := []byte(viper.GetString(fmt.Sprintf("%s.refreshSecret", tokenSect)))
 	accessExpirationSeconds := time.Duration(viper.GetInt(fmt.Sprintf("%s.accessToken", maxAgeSect)))
 	refreshExpirationSeconds := time.Duration(viper.GetInt(fmt.Sprintf("%s.refreshToken", maxAgeSect)))
 	issuer := viper.GetString(fmt.Sprintf("%s.issuer", tokenSect))
-	return &TokenConfig{
+	return &TokenConfigBody{
 		accessTokenSecret:        accessTokenSecret,
 		refreshTokenSecret:       refreshTokenSecret,
 		accessExpirationSeconds:  accessExpirationSeconds,

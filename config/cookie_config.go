@@ -6,8 +6,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-// CookieConfig - contaiin cookie setting
-type CookieConfig struct {
+// CookieConfig interface
+type CookieConfig interface {
+	GetAccessTokenMaxAge() int
+	GetRefreshTokenMaxAge() int
+	GetDomain() string
+	GetSecure() bool
+	GetHTTPOnly() bool
+}
+
+// CookieConfigBody - implement CookieConfig interface
+type CookieConfigBody struct {
 	secure             bool
 	httpOnly           bool
 	accessTokenMaxAge  int
@@ -16,39 +25,39 @@ type CookieConfig struct {
 }
 
 // GetAccessTokenMaxAge -
-func (c *CookieConfig) GetAccessTokenMaxAge() int {
+func (c *CookieConfigBody) GetAccessTokenMaxAge() int {
 	return c.accessTokenMaxAge
 }
 
 // GetRefreshTokenMaxAge -
-func (c *CookieConfig) GetRefreshTokenMaxAge() int {
+func (c *CookieConfigBody) GetRefreshTokenMaxAge() int {
 	return c.refreshTokenMaxAge
 }
 
 // GetDomain -
-func (c *CookieConfig) GetDomain() string {
+func (c *CookieConfigBody) GetDomain() string {
 	return c.domain
 }
 
 // GetSecure -
-func (c *CookieConfig) GetSecure() bool {
+func (c *CookieConfigBody) GetSecure() bool {
 	return c.secure
 }
 
 // GetHTTPOnly -
-func (c *CookieConfig) GetHTTPOnly() bool {
+func (c *CookieConfigBody) GetHTTPOnly() bool {
 	return c.httpOnly
 }
 
 // ReadCookieConfig -
-func ReadCookieConfig(cookieSect string, maxAgeSect string) *CookieConfig {
+func ReadCookieConfig(cookieSect string, maxAgeSect string) CookieConfig {
 	secure := viper.GetBool(fmt.Sprintf("%s.accessToken", cookieSect))
 	httpOnly := viper.GetBool(fmt.Sprintf("%s.httpOnly", cookieSect))
 
 	accessTokenMaxAge := viper.GetInt(fmt.Sprintf("%s.accessToken", maxAgeSect))
 	refreshTokenMaxAge := viper.GetInt(fmt.Sprintf("%s.refreshToken", maxAgeSect))
 	domain := viper.GetString(fmt.Sprintf("%s.domain", cookieSect))
-	return &CookieConfig{
+	return &CookieConfigBody{
 		secure:             secure,
 		httpOnly:           httpOnly,
 		accessTokenMaxAge:  accessTokenMaxAge,
