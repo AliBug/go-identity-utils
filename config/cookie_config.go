@@ -51,7 +51,8 @@ func (c *CookieConfigBody) GetHTTPOnly() bool {
 
 // ReadCookieConfig -
 func ReadCookieConfig(cookieSect string, maxAgeSect string) CookieConfig {
-	secure := viper.GetBool(fmt.Sprintf("%s.accessToken", cookieSect))
+
+	secure := viper.GetBool(fmt.Sprintf("%s.secure", cookieSect))
 	httpOnly := viper.GetBool(fmt.Sprintf("%s.httpOnly", cookieSect))
 
 	accessTokenMaxAge := viper.GetInt(fmt.Sprintf("%s.accessToken", maxAgeSect))
