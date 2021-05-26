@@ -14,5 +14,6 @@ func ReadRedisConfig(sect string) string {
 	redisHost := viper.GetString(fmt.Sprintf("%s.host", sect))
 	redisPass := viper.GetString(fmt.Sprintf("%s.pass", sect))
 	redisDbName := viper.GetString(fmt.Sprintf("%s.database", sect))
+	// ⚠️ pass 中 有 @ 会出错
 	return fmt.Sprintf(redisURLTemplate, redisPass, redisHost, redisDbName)
 }
