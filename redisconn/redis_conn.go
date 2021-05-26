@@ -3,8 +3,8 @@ package redisconn
 import (
 	"fmt"
 
+	"github.com/alibug/go-identity-utils/config"
 	"github.com/go-redis/redis/v8"
-	"github.com/spf13/viper"
 )
 
 // NewConn - 初始化 redis 连接
@@ -19,14 +19,7 @@ func NewConn(url string) (*redis.Client, error) {
 
 // NewConnFromConfig 从配置文件中读取信息，返回 redis 客户端
 func NewConnFromConfig(sect string) *redis.Client {
-	redisHost := viper.GetString(fmt.Sprintf("%s.host", sect))
-	redisPort := viper.GetString(fmt.Sprintf("%s.port", sect))
-	redisPass := viper.GetString(fmt.Sprintf("%s.pass", sect))
-	redisDbName := viper.GetInt(fmt.Sprintf("%s.database", sect))
-	if redisPort == "" {
-		redisPort = "6379"
-	}
-	redisAddress := fmt.Sprintf("%s:%s", redisHost, redisPort)
-	opt := &redis.Options{Addr: redisAddress, Password: redisPass, DB: redisDbName}
+	conf := config.ReadRedisConfig(sect)
+	opt := &redis.Options{Addr: conf.GetAddress(), Password: conf.GetPassword(), DB: conf.GetDB()}
 	return redis.NewClient(opt)
 }
