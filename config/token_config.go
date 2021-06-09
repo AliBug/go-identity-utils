@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/spf13/viper"
@@ -57,11 +58,16 @@ func ReadTokenConfig(tokenSect string, maxAgeSect string) TokenConfig {
 	accessExpirationSeconds := time.Duration(viper.GetInt(fmt.Sprintf("%s.accessToken", maxAgeSect)))
 	refreshExpirationSeconds := time.Duration(viper.GetInt(fmt.Sprintf("%s.refreshToken", maxAgeSect)))
 	issuer := viper.GetString(fmt.Sprintf("%s.issuer", tokenSect))
+
+	if accessExpirationSeconds <= 0 || refreshExpirationSeconds <= 0 || accessExpirationSeconds >= refreshExpirationSeconds {
+		log.Fatalf("Some Max age are error! accessExpirationSeconds: %v | refreshExpirationSeconds: %v | accessTokenMaxAge>=refreshTokenMaxAge: %v", accessExpirationSeconds, refreshExpirationSeconds, accessExpirationSeconds >= refreshExpirationSeconds)
+	}
+
 	return &TokenConfigBody{
 		accessTokenSecret:        accessTokenSecret,
 		refreshTokenSecret:       refreshTokenSecret,
-		accessExpirationSeconds:  accessExpirationSeconds,
-		refreshExpirationSeconds: refreshExpirationSeconds,
+		accessExpirationSeconds:  time.Second * accessExpirationSeconds,
+		refreshExpirationSeconds: time.Second * refreshExpirationSeconds,
 		issuer:                   issuer,
 	}
 }

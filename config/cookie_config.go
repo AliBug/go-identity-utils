@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/spf13/viper"
 )
@@ -90,6 +91,14 @@ func ReadCookieConfig(cookieSect string, maxAgeSect string) CookieConfig {
 	accessTokenField := viper.GetString(fmt.Sprintf("%s.accessTokenField", cookieSect))
 	userIDField := viper.GetString(fmt.Sprintf("%s.userIDField", cookieSect))
 	displayNameField := viper.GetString(fmt.Sprintf("%s.displayNameField", cookieSect))
+
+	if accessTokenMaxAge <= 0 || refreshTokenMaxAge <= 0 || accessTokenMaxAge >= refreshTokenMaxAge {
+		log.Fatalf("Some Max age are error! accessTokenMaxAge: %v | refreshTokenMaxAge: %v | accessTokenMaxAge>=refreshTokenMaxAge: %v", accessTokenMaxAge, refreshTokenMaxAge, accessTokenMaxAge >= refreshTokenMaxAge)
+	}
+
+	if accessTokenField == "" || refreshTokenField == "" || userIDField == "" || displayNameField == "" {
+		log.Fatalf("Some Field are empty! accessTokenField: %s | refreshTokenField: %s | userIDField: %s | displayNameField: %s", accessTokenField, refreshTokenField, userIDField, displayNameField)
+	}
 
 	return &CookieConfigBody{
 		secure:             secure,
