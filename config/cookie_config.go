@@ -11,6 +11,10 @@ type CookieConfig interface {
 	GetAccessTokenMaxAge() int
 	GetRefreshTokenMaxAge() int
 	GetDomain() string
+	GetAccessTokenField() string
+	GetRefreshTokenField() string
+	GetUserIDField() string
+	GetDisplayNameField() string
 	GetSecure() bool
 	GetHTTPOnly() bool
 }
@@ -22,6 +26,10 @@ type CookieConfigBody struct {
 	accessTokenMaxAge  int
 	refreshTokenMaxAge int
 	domain             string
+	refreshTokenField  string
+	accessTokenField   string
+	userIDField        string
+	displayNameField   string
 }
 
 // GetAccessTokenMaxAge -
@@ -37,6 +45,26 @@ func (c *CookieConfigBody) GetRefreshTokenMaxAge() int {
 // GetDomain -
 func (c *CookieConfigBody) GetDomain() string {
 	return c.domain
+}
+
+// GetAccessTokenField -
+func (c *CookieConfigBody) GetAccessTokenField() string {
+	return c.accessTokenField
+}
+
+// GetRefreshTokenField -
+func (c *CookieConfigBody) GetRefreshTokenField() string {
+	return c.refreshTokenField
+}
+
+// GetUserIDField -
+func (c *CookieConfigBody) GetUserIDField() string {
+	return c.userIDField
+}
+
+// GetDisplayNameField -
+func (c *CookieConfigBody) GetDisplayNameField() string {
+	return c.displayNameField
 }
 
 // GetSecure -
@@ -58,11 +86,20 @@ func ReadCookieConfig(cookieSect string, maxAgeSect string) CookieConfig {
 	accessTokenMaxAge := viper.GetInt(fmt.Sprintf("%s.accessToken", maxAgeSect))
 	refreshTokenMaxAge := viper.GetInt(fmt.Sprintf("%s.refreshToken", maxAgeSect))
 	domain := viper.GetString(fmt.Sprintf("%s.domain", cookieSect))
+	refreshTokenField := viper.GetString(fmt.Sprintf("%s.refreshTokenField", cookieSect))
+	accessTokenField := viper.GetString(fmt.Sprintf("%s.accessTokenField", cookieSect))
+	userIDField := viper.GetString(fmt.Sprintf("%s.userIDField", cookieSect))
+	displayNameField := viper.GetString(fmt.Sprintf("%s.displayNameField", cookieSect))
+
 	return &CookieConfigBody{
 		secure:             secure,
 		httpOnly:           httpOnly,
 		accessTokenMaxAge:  accessTokenMaxAge,
 		refreshTokenMaxAge: refreshTokenMaxAge,
 		domain:             domain,
+		refreshTokenField:  refreshTokenField,
+		accessTokenField:   accessTokenField,
+		userIDField:        userIDField,
+		displayNameField:   displayNameField,
 	}
 }

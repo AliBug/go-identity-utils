@@ -56,7 +56,7 @@ func ReadRedisConfig(sect string) RedisConfig {
 	if redisPort != "" {
 		config.address = fmt.Sprintf("%s:%s", redisHost, redisPort)
 	} else {
-		config.address = redisHost
+		config.address = fmt.Sprintf("%s:%s", redisHost, "6379")
 	}
 	return config
 }
